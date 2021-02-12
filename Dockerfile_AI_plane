@@ -1,0 +1,23 @@
+FROM kunalg106/cuda100
+
+
+RUN conda install -c conda-forge nibabel
+RUN conda install -c conda-forge xlsxwriter
+RUN conda install -c conda-forge keras==2.2.4
+RUN conda install -c conda-forge opencv
+RUN conda install -c anaconda tensorflow-gpu==1.14.0
+
+RUN wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.58/libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb
+RUN sudo dpkg -i  libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb
+
+RUN pip install tensorflow-gpu==1.14.0
+RUN pip install keras==2.2.4
+RUN pip install opencv-python
+
+RUN pip install git+https://github.com/zhennongchen/dvpy.git#egg=dvpy
+
+
+
+
+
+
