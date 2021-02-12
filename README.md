@@ -2,7 +2,7 @@
 
 =======
 
-Authors: Zhennong Chen, Davis Vigneault, Marzia Rogolli and Francisco Contijoch
+Authors: Zhennong Chen, Davis Vigneault, Marzia Rogolli and Francisco Contijoch<br />
 Citation: Paper under review by European Heart Journal - Digital Health.
 
 ## Description
@@ -25,15 +25,11 @@ Here is a list of things you need to prepare:
 ### Steps:
 Follow the steps indicated by file-names to run the code
 
-step 1: define default parameters by running ./main_step1_defaults.sh
-
-step 2A：train the segmentation model by running ./main_step2A_train_segmentation.py --batch N
-
-step 2B: pick the pre-trained segmentation model for weight initialzation for the vector training (run ./main_step2B_trian_vectors.py --batch N
-
-step 3: predict by running python main_step3_predict.py
-
-step 4: make predicted cine image of cardiac imaging planes by running python main_step4_generate_predicted_plane_image.py
+step 1: define default parameters by running ./main_step1_defaults.sh<br />
+step 2A：train the segmentation model by running ./main_step2A_train_segmentation.py --batch N<br />
+step 2B: pick the pre-trained segmentation model for weight initialzation for the vector training (run ./main_step2B_trian_vectors.py --batch N<br />
+step 3: predict by running python main_step3_predict.py<br />
+step 4: make predicted cine image of cardiac imaging planes by running python main_step4_generate_predicted_plane_image.py<br />
 
 ### Additional guidelines
 see comments in the script
