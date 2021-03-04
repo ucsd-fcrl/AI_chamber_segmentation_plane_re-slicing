@@ -2,7 +2,7 @@
 
 =======
 
-Authors: Zhennong Chen, Davis Vigneault, Marzia Rogolli and Francisco Contijoch<br />
+Authors: Zhennong Chen, Davis Vigneault, Marzia Rogolli, Seth Kligerman, Lewis Hahn, Anna Narezkina, Amanda Craine, Katherine Lowe and Francisco Contijoch<br />
 Citation: Paper under review by European Heart Journal - Digital Health.
 
 ## Description
