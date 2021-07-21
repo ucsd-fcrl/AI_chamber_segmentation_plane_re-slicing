@@ -431,7 +431,7 @@ def make_movies(save_path,pngs,fps):
         mpr_array.append(img)
 
     # save movies
-    out = cv2.VideoWriter(save_path,cv2.VideoWriter_fourcc(*'mp4v'),10,(w,h))
+    out = cv2.VideoWriter(save_path,cv2.VideoWriter_fourcc(*'mp4v'),fps,(w,h))
     for j in range(len(mpr_array)):
         out.write(mpr_array[j])
     out.release()
