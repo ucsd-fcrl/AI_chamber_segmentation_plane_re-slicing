@@ -2,7 +2,7 @@
 
 =======
 This is the GitHub repo for published paper: <br />
-Automated Cardiac Volume Assessment and Cardiac Long- and Short-Axis Imaging Plane Prediction from ECG-gated CT Volumes Enabled By Deep Learning.
+Automated Cardiac Volume Assessment and Cardiac Long- and Short-Axis Imaging Plane Prediction from ECG-gated CT Volumes Enabled By Deep Learning.<br />
 Authors: Zhennong Chen, Davis Vigneault, Marzia Rogolli, Francisco Contijoch<br />
 Citation: Zhennong Chen, Marzia Rigolli, Davis Marc Vigneault, Seth Kligerman, Lewis Hahn, Anna Narezkina, Amanda Craine, Katherine Lowe, Francisco Contijoch, Automated cardiac volume assessment and cardiac long- and short-axis imaging plane prediction from electrocardiogram-gated computed tomography volumes enabled by deep learning, European Heart Journal - Digital Health, Volume 2, Issue 2, June 2021, Pages 311–322, https://doi.org/10.1093/ehjdh/ztab033
 
