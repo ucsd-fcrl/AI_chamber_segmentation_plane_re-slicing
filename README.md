@@ -13,7 +13,7 @@ This convolutional neural network is a variant of conventional U-Net. We modifie
 ## User Guideline
 ### Environment Setup
 The entire code is [containerized](https://www.docker.com/resources/what-container). This makes setting up environment swift and easy. Make sure you have nvidia-docker and Docker CE [installed](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker) on your machine before going further. 
-    - You can build your own docker from provided dockerfile ```Dockerfile_cuda100_tensorflow```. 
+    - You can build your own docker from provided dockerfile ```Dockerfile_cuda100_tensorflow```. <br />
     - This repo relies on a python package called dvpy. Make sure you have the latest version. If not, in terminal type: pip uninstall dvpy; pip install git+https://github.com/zhennongchen/dvpy.git#egg=dvpy
 
 ### Data preparation
@@ -43,7 +43,7 @@ Read the paper "Methods" section for more details about the training strategy.
 ```main_prediction.py```: predict segmentation and plane vectors for new cases<br />
 ```main_generate_predicted_plane_movie```: use plane vectors to generate a cine movie of imaging planes showing the cardiac function across cardiac cycle. see ```Example_plane_cine.mp4``` for how the movie looks like. <br />
 
-We highly recommend to use [another GitHub Repo](https://github.com/ucsd-fcrl/DL_CT_Seg-Plane_Prediction_Final_v_ZC) designed specific to predict segmentation&planes on new cases using trained DL model. It can generate better (higher resolution) results and is useful when you have more than one trained models for the same task.
+We highly recommend to use [our GitHub Repo](https://github.com/ucsd-fcrl/DL_CT_Seg-Plane_Prediction_Final_v_ZC) designed specific to *predict* segmentation&planes on new cases using trained DL model. It can generate better (*higher resolution*) results and is useful when you have *more than one* trained models for the same task.
 
 
 ### Additional guidelines
