@@ -30,18 +30,69 @@ def find_all_target_files(target_file_name,main_folder):
         F = np.concatenate((F,f))
     return F
 
-# function: convert coordinates to different coordinate system by affine matrix                             
-def convert_coordinates(target_affine, initial_affine, r):
-    affine_multiply = np.linalg.inv(target_affine).dot(initial_affine)
-    return apply_affine(affine_multiply,r)
+# function: make movies of several .png files
+def make_movies(save_path,pngs,fps = 10):
+    mpr_array=[]
+    i = cv2.imread(pngs[0])
+    h,w,l = i.shape
+
+    for j in pngs:
+        img = cv2.imread(j)
+        mpr_array.append(img)
+
+    # set fps
+    if len(pngs) == 16:
+        fps = 15 # set 16 will cause bug
+    elif len(pngs) > 20:
+        fps = len(pngs)//2
+    else:
+        fps = len(pngs)
+
+    # save movies
+    out = cv2.VideoWriter(save_path,cv2.VideoWriter_fourcc(*'mp4v'),fps,(w,h))
+    for j in range(len(mpr_array)):
+        out.write(mpr_array[j])
+    out.release()
+
+
+# function: find time frame of a file
+def find_timeframe(file,num_of_dots,signal = '/'):
+    k = list(file)
+    if num_of_dots == 1: #.png
+        num1 = [i for i, e in enumerate(k) if e == '.'][-1]
+    else:
+        num1 = [i for i, e in enumerate(k) if e == '.'][-2]
+    num2 = [i for i,e in enumerate(k) if e==signal][-1]
+    kk=k[num2+1:num1]
+    if len(kk)==2:
+        return int(kk[0])*10+int(kk[1])
+    if len(kk) == 3:
+        return int(kk[0])*100 + int(kk[1])*10 + int(kk[2])
+    if len(kk)==1: 
+        return int(kk[0])
+
+# function: sort files based on their time frames
+def sort_timeframe(files,num_of_dots,signal = '/'):
+    time=[]
+    time_s=[]
+    for i in files:
+        a = find_timeframe(i,num_of_dots,signal)
+        time.append(a)
+        time_s.append(a)
+    time_s.sort()
+    new_files=[]
+    for i in range(0,len(time_s)):
+        j = time.index(time_s[i])
+        new_files.append(files[j])
+    new_files = np.asarray(new_files)
+    return new_files
+
+    
 
 # function: normalize one vector
 def normalize(x):
     x_scale = np.linalg.norm(x)
-    if x_scale == 0:
-        return np.array([0,0,0])
-    else:
-        return np.asarray([i/x_scale for i in x])
+    return np.asarray([i/x_scale for i in x])
 
 # function: get length of one vector and angle between two vectors
 def dotproduct(v1, v2):
@@ -55,29 +106,6 @@ def angle(v1, v2):
     result = rad / math.pi * 180
     return result
 
-# function: calculate orientation error:
-def orientation_error(x_truth,y_truth,x_pred,y_pred):
-    n_truth = normalize(np.cross(x_truth,y_truth))
-    n_pred = normalize(np.cross(x_pred,y_pred))
-
-    error =  angle(n_truth,n_pred)
-    if error > 180:
-        error = error - 180
-    return error
-
-# function: project one vector onto a plane with known normal vectors
-def project_onto_plane(u,n):
-    '''n is the normal vector of the plane'''
-    n = normalize(n)
-    return (u - dotproduct(u,n) * n)
-
-# function: only pick one time frame from each patient
-def one_time_frame_per_patient(x):
-  '''only pick one time frame for each patient'''
-  for i in range(len(x)):
-    if i%2 == 1:
-      x[i]='0'
-  return x[x!='0']
 
 # function: turn normalized vector into pixel unit
 def turn_to_pixel(vec,size=[160,160,96]):
@@ -85,31 +113,10 @@ def turn_to_pixel(vec,size=[160,160,96]):
     result = [t[i]*size[i]/2 for i in range(0,3)]
     return np.array(result)
 
-# function: define the interpolation
-def define_interpolation(data,Fill_value=0,Method='linear'):
-    shape = data.shape
-    [x,y,z] = [np.linspace(0,shape[0]-1,shape[0]),np.linspace(0,shape[1]-1,shape[1]),np.linspace(0,shape[-1]-1,shape[-1])]
-    interpolation = RegularGridInterpolator((x,y,z),data,method=Method,bounds_error=False,fill_value=Fill_value)
-    return interpolation
-
-# function: reslice a mpr
-def reslice_mpr(mpr_data,plane_center,x,y,x_s,y_s,interpolation):
-    # plane_center is the center of a plane in the coordinate of the whole volume
-    mpr_shape = mpr_data.shape
-    new_mpr=[]
-    centerpoint = np.array([(mpr_shape[0]-1)/2,(mpr_shape[1]-1)/2,0])
-    for i in range(0,mpr_shape[0]):
-        for j in range(0,mpr_shape[1]):
-            delta = np.array([i,j,0])-centerpoint
-            v = plane_center + (x*x_s)*delta[0]+(y*y_s)*delta[1]
-            new_mpr.append(v)
-    new_mpr=interpolation(new_mpr).reshape(mpr_shape)
-    return new_mpr
-
 # function: extract vectors from numpy file
 def get_ground_truth_vectors(filename):
     a = np.load(os.path.join(filename),allow_pickle=True)
-    [t,x,y,s,img_center] = [a[0],a[2],a[3],a[6],a[5]]
+    [t,x,y,s,img_center] = [a[12],a[6],a[8],a[11],a[14]] # be very careful to these indexes, refer to Extract_vector_from_affine.py, function get_vector_from_affines
     result = {'t':t,'x':x,'y':y,'s':s,'img_center':img_center}
     return result
 
@@ -184,7 +191,7 @@ def find_center_list(start_center,n,num_of_plane,slice_thickness,pixel_dimension
         center_list = np.concatenate((center_list,c.reshape(1,3)))
     return center_list
 
-# find center list for the whole stack (refer to function find_num_of_slices_in_SAX)
+# find center list for the whole stack (refer to function find_num_of_slices_in_SAX
 def find_center_list_whole_stack(start_center,n,num_a,num_b,slice_thickness,pixel_dimension = 2.59):
     # n is normal vector
     center_list = start_center.reshape(1,3)
@@ -213,10 +220,32 @@ def resample_SAX_stack_into_particular_num_of_planes(range_of_index,num_of_plane
     else: 
         return 0,0,gap
 
+# function: define the interpolation
+def define_interpolation(data,Fill_value=0,Method='linear'):
+    shape = data.shape
+    [x,y,z] = [np.linspace(0,shape[0]-1,shape[0]),np.linspace(0,shape[1]-1,shape[1]),np.linspace(0,shape[-1]-1,shape[-1])]
+    interpolation = RegularGridInterpolator((x,y,z),data,method=Method,bounds_error=False,fill_value=Fill_value)
+    return interpolation
+
+# function: reslice a mpr
+def reslice_mpr(mpr_data,plane_center,x,y,x_s,y_s,interpolation):
+    # plane_center is the center of a plane in the coordinate of the whole volume
+    mpr_shape = mpr_data.shape
+    new_mpr=[]
+    centerpoint = np.array([(mpr_shape[0]-1)/2,(mpr_shape[1]-1)/2,0])
+    for i in range(0,mpr_shape[0]):
+        for j in range(0,mpr_shape[1]):
+            delta = np.array([i,j,0])-centerpoint
+            v = plane_center + (x*x_s)*delta[0]+(y*y_s)*delta[1]
+            new_mpr.append(v)
+    new_mpr=interpolation(new_mpr).reshape(mpr_shape)
+    return new_mpr
+
+
     
 # function: check affine from all time frames (affine may have errors in some tf, that's why we need to find the mode )
 def check_affine(one_time_frame_file_name):
-    """this function uses the affine with each element as the mode in all time frames"""
+    """this function gets the affine matrix of the CT image without the potential errors by checking all time frames"""
     joinpath = os.path.join(os.path.dirname(one_time_frame_file_name),'*.nii.gz')
     f = np.array(sorted(glob.glob(joinpath)))
     a = np.zeros((4,4,len(f)))
@@ -235,12 +264,20 @@ def check_affine(one_time_frame_file_name):
             result[ii,jj] = max(set(l),key=l.count)
     return result
 
+# function: convert coordinates to different coordinate system by affine matrix                             
+def convert_coordinates(target_affine, initial_affine, r):
+    affine_multiply = np.linalg.inv(target_affine).dot(initial_affine)
+    return apply_affine(affine_multiply,r)
 
 # function: get affine matrix from translation,x,y and scale
-def get_affine_from_vectors(mpr_data,volume_affine,vector,zoom):
+def get_affine_from_vectors(mpr_data,volume_affine,vector,zoom = 1.0):
     # it answers one important question: what's [1 1 1] in the coordinate system of predicted plane in that
     # of the whole CT volume
-    [t,x,y,s,i_center] = [vector['t'],vector['x'],vector['y'],vector['s']/zoom,vector['img_center']]
+   
+    #[t,x,y,s,i_center] = [vector['t'],vector['x'],vector['y'],vector['s']/zoom,vector['img_center']]
+
+    new_s = [a / zoom for a in vector['s']]
+    [t,x,y,s,i_center] = [vector['t'],vector['x'],vector['y'],new_s,vector['img_center']]
     shape = mpr_data.shape
     mpr_center=np.array([(shape[0]-1)/2,(shape[1]-1)/2,0])
     Transform = np.ones((4,4))
@@ -291,7 +328,7 @@ def draw_arbitrary_axis(image,axis,start_point,length = 500):
     return result
 
 # function: draw the intersection of two mpr planes on one plane (draw the intersection of plane 1 and 2 on plane 2)
-def draw_plane_intersection(plane2_image,plane1_x,plane1_y,plane1_affine,plane2_affine,volume_affine):
+def draw_plane_intersection(plane2_image,plane1_x,plane1_y,plane1_affine,plane2_affine,volume_affine,print_message = 0):
     '''plane 2 is the plane in which we want to draw axis'''
     real_x = convert_coordinates(plane2_affine,volume_affine,np.array([1,1,1]+plane1_x)) - convert_coordinates(plane2_affine,volume_affine,np.array([1,1,1]))
     real_y = convert_coordinates(plane2_affine,volume_affine,np.array([1,1,1]+plane1_y)) - convert_coordinates(plane2_affine,volume_affine,np.array([1,1,1]))
@@ -299,6 +336,8 @@ def draw_plane_intersection(plane2_image,plane1_x,plane1_y,plane1_affine,plane2_
     n1 = np.cross(real_x,real_y)
     n2 = np.array([0,0,1])
     intersect_direct = (0.5/(np.cross(n1,n2)[0])) * np.cross(n1,n2)
+    if print_message == 1:
+        print('direction n1 is ', n1, normalize(n1))
     
     # find one point in the intersection line
     # a plane is defined as <a,b,c> . <x-x0,y-y0,z-z0> = 0
@@ -312,6 +351,9 @@ def draw_plane_intersection(plane2_image,plane1_x,plane1_y,plane1_affine,plane2_
     u = np.cross(n1,n2)
     u_length = math.sqrt(u[0]**2+u[1]**2+u[2]**2)
     intersect_point = np.cross((d2*n1-d1*n2),u)/(u_length**2)
+    if print_message == 1:
+        print('point is ', intersect_point)
+
     result_line = draw_arbitrary_axis(plane2_image,intersect_direct,intersect_point)
     return result_line,intersect_direct,intersect_point
 
@@ -339,37 +381,6 @@ def DICE(seg1,seg2,target_val):
     return DSC
 
 
-# function: find time frame of a file
-# function: find time frame of a file
-def find_timeframe(file,num_of_dots,signal = '/'):
-    k = list(file)
-    if num_of_dots == 1: #.png
-        num1 = [i for i, e in enumerate(k) if e == '.'][-1]
-    else:
-        num1 = [i for i, e in enumerate(k) if e == '.'][-2]
-    num2 = [i for i,e in enumerate(k) if e==signal][-1]
-    kk=k[num2+1:num1]
-    if len(kk)>1:
-        return int(kk[0])*10+int(kk[1])
-    else: 
-        return int(kk[0])
-
-# function: sort files based on their time frames
-def sort_timeframe(files,num_of_dots,signal = '/'):
-    time=[]
-    time_s=[]
-    for i in files:
-        a = find_timeframe(i,num_of_dots,signal)
-        time.append(a)
-        time_s.append(a)
-    time_s.sort()
-    new_files=[]
-    for i in range(0,len(time_s)):
-        j = time.index(time_s[i])
-        new_files.append(files[j])
-    new_files = np.asarray(new_files)
-    return new_files
-
 # function: set window level and width
 def set_window(image,level,width):
     if len(image.shape) == 3:
@@ -389,26 +400,31 @@ def set_window(image,level,width):
             new[i,j] = norm
     return new
 
+
+
 # function: adapt the re-slicing vector from low resolution for native resolution:
-def adapt_reslice_vector_for_native_resolution(vector,volume_file_low,volume_file_native):
-    A_low = check_affine(volume_file_low)
-    A_native = check_affine(volume_file_native)
-    dim_low = get_voxel_size(volume_file_low)
-    dim_native = get_voxel_size(volume_file_native) 
-    # adapt direction vectors:
-    vector['x'] = convert_coordinates(A_native,A_low,vector['x']) - convert_coordinates(A_native,A_low,[0,0,0])
-    vector['y'] = convert_coordinates(A_native,A_low,vector['y']) - convert_coordinates(A_native,A_low,[0,0,0])
+# def adapt_reslice_vector_for_native_resolution(vector,volume_file_low,volume_file_native):
+#     A_low = check_affine(volume_file_low)
+#     A_native = check_affine(volume_file_native)
+#     dim_low = get_voxel_size(volume_file_low)
+  
+#     dim_native = get_voxel_size(volume_file_native) 
 
-    vector['s'] = np.array([length(vector['x']),length(vector['y'])])
-    # also find the scale of vectors that can be used to reslice on orignial CT volume
-    vector['final_s'] = np.array([vector['s'][0]/dim_low[0]*dim_native[0], vector['s'][1]/dim_low[1]*dim_native[1]])
 
-    vector['x'] = normalize(vector['x'])
-    vector['y'] = normalize(vector['y'])
-    # adapt translation vector
-    t_low = vector['t']
-    vector['t'] = np.asarray([t_low[i] * dim_low[i] / dim_native[i] for i in range(0,t_low.shape[0])])
-    return vector
+#     # adapt direction vectors:
+#     vector['x'] = convert_coordinates(A_native,A_low,vector['x']) - convert_coordinates(A_native,A_low,[0,0,0])
+#     vector['y'] = convert_coordinates(A_native,A_low,vector['y']) - convert_coordinates(A_native,A_low,[0,0,0])
+
+#     vector['s'] = np.array([length(vector['x']),length(vector['y'])])
+#     # also find the scale of vectors that can be used to reslice on orignial CT volume
+#     vector['final_s'] = np.array([vector['s'][0]/dim_low[0]*dim_native[0], vector['s'][1]/dim_low[1]*dim_native[1]])
+
+#     vector['x'] = normalize(vector['x'])
+#     vector['y'] = normalize(vector['y'])
+#     # adapt translation vector
+#     t_low = vector['t']
+#     vector['t'] = np.asarray([t_low[i] * dim_low[i] / dim_native[i] for i in range(0,t_low.shape[0])])
+#     return vector
 
 
 # function: set scale for plane re-slicing in the case in which x and y scale are not the same (=1 for both)
@@ -420,21 +436,6 @@ def set_scale_for_unequal_x_and_y(vector,zoom_factor = 1):
     else:
         return np.array([1.0/vector['s'][1]*vector['s'][0]/zoom_factor,1.0/zoom_factor])
 
-# function: make movies of several .png files
-def make_movies(save_path,pngs,fps):
-    mpr_array=[]
-    i = cv2.imread(pngs[0])
-    h,w,l = i.shape
-
-    for j in pngs:
-        img = cv2.imread(j)
-        mpr_array.append(img)
-
-    # save movies
-    out = cv2.VideoWriter(save_path,cv2.VideoWriter_fourcc(*'mp4v'),fps,(w,h))
-    for j in range(len(mpr_array)):
-        out.write(mpr_array[j])
-    out.release()
 
 
 

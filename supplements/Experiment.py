@@ -6,7 +6,7 @@ class Experiment():
   def __init__(self):
 
     # # folder
-    self.main_dir = os.environ['CG_MAIN_DATA_DIR']
+    self.main_dir = os.environ['CG_MAIN_DIR']
     self.data_dir = os.environ['CG_DATA_DIR']
     self.predict_dir = os.environ['CG_PREDICT_DIR']
     self.model_dir = os.environ['CG_MODEL_DIR']
