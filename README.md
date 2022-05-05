@@ -17,7 +17,7 @@ The entire code is [containerized](https://www.docker.com/resources/what-contain
 
 ### Data preparation
 Here is a list of things you need to prepare:
-1. CT volumes (file format: NIfTI image)
+1. CT volumes, file format: NIfTI image
 2. Ground truth chamber segmentation (at least LV and LA, better to have LVOT as well), file format: NIfTI image
 3. Ground truth manual cardiac imaging planes (3 LAX and one SAX), file format: NIfTI image
 
