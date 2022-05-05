@@ -12,7 +12,7 @@ This convolutional neural network is a variant of conventional U-Net. We modifie
 
 ## User Guideline
 ### Environment Setup
-The entire code is [containerized](https://www.docker.com/resources/what-container). This makes setting up environment swift and easy. Make sure you have nvidia-docker and Docker CE [installed](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker) on your machine before going further. 
+The entire code is [containerized](https://www.docker.com/resources/what-container). This makes setting up environment swift and easy. Make sure you have nvidia-docker and Docker CE [installed](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker) on your machine before going further. <br />
     - You can build your own docker from provided dockerfile ```Dockerfile_cuda100_tensorflow```. <br />
     - This repo relies on a python package called dvpy. Make sure you have the latest version. If not, in terminal type: pip uninstall dvpy; pip install git+https://github.com/zhennongchen/dvpy.git#egg=dvpy
 
