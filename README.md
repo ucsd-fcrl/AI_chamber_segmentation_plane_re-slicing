@@ -1,8 +1,8 @@
-# AI_chamber_segmentation_plane_re-slicing
+# A DL Pipieline to Simultaneously Predict Multi-Chamber Segmentation and Cardiac Imaging Planes
+**Author: Zhennong Chen, PhD**<br />
 
-=======
 This is the GitHub repo for published paper: <br />
-Automated Cardiac Volume Assessment and Cardiac Long- and Short-Axis Imaging Plane Prediction from ECG-gated CT Volumes Enabled By Deep Learning.<br />
+*Automated Cardiac Volume Assessment and Cardiac Long- and Short-Axis Imaging Plane Prediction from ECG-gated CT Volumes Enabled By Deep Learning.*<br />
 Authors: Zhennong Chen, Davis Vigneault, Marzia Rogolli, Francisco Contijoch<br />
 Citation: Zhennong Chen, Marzia Rigolli, Davis Marc Vigneault, Seth Kligerman, Lewis Hahn, Anna Narezkina, Amanda Craine, Katherine Lowe, Francisco Contijoch, Automated cardiac volume assessment and cardiac long- and short-axis imaging plane prediction from electrocardiogram-gated computed tomography volumes enabled by deep learning, European Heart Journal - Digital Health, Volume 2, Issue 2, June 2021, Pages 311–322, https://doi.org/10.1093/ehjdh/ztab033
 
@@ -28,14 +28,14 @@ Follow the steps indicated by file-names to run the code
 
 step 1: define default parameters by running ./main_step1_defaults.sh<br />
 step 2A：train the segmentation model by running ./main_step2A_train_segmentation.py --batch N<br />
-step 2B: pick the pre-trained segmentation model for weight initialzation for the vector training (run ./main_step2B_trian_vectors.py --batch N<br />
+step 2B: pick the pre-trained segmentation model for weight initialzation for the vector training by running ./main_step2B_trian_vectors.py --batch N<br />
 step 3: predict by running python main_step3_predict.py<br />
-step 4: make predicted cine image of cardiac imaging planes by running python main_step4_generate_predicted_plane_image.py<br />
+step 4: make cine image of predicted cardiac imaging planes by running python main_step4_generate_predicted_plane_image.py<br />
 
 ### Additional guidelines
 see comments in the script
 
-Please contact zhc043@eng.ucsd.edu for any further questions.
+Please contact zhc043@eng.ucsd.edu or chenzhennong@gmail.com for any further questions.
 
 
 
