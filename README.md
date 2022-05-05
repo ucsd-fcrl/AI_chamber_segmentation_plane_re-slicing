@@ -41,7 +41,7 @@ Read the paper "Methods" section for more details about the training strategy.
 
 ### Predict for new cases
 ```main_prediction.py```: predict segmentation and plane vectors for new cases<br />
-```main_generate_predicted_plane_movie```: use plane vectors to generate a cine movie of imaging planes showing the cardiac function across cardiac cycle. see Example_plane_cine.mp4 for how the movie looks like. <br />
+```main_generate_predicted_plane_movie```: use plane vectors to generate a cine movie of imaging planes showing the cardiac function across cardiac cycle. see ```Example_plane_cine.mp4``` for how the movie looks like. <br />
 
 We highly recommend to use [another GitHub Repo](https://github.com/ucsd-fcrl/DL_CT_Seg-Plane_Prediction_Final_v_ZC) designed specific to predict segmentation&planes on new cases using trained DL model. It can generate better (higher resolution) results and is useful when you have more than one trained models for the same task.
 
