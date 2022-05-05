@@ -7,7 +7,7 @@ Authors: Zhennong Chen, Davis Vigneault, Marzia Rogolli, Francisco Contijoch<br 
 Citation: Zhennong Chen, Marzia Rigolli, Davis Marc Vigneault, Seth Kligerman, Lewis Hahn, Anna Narezkina, Amanda Craine, Katherine Lowe, Francisco Contijoch, Automated cardiac volume assessment and cardiac long- and short-axis imaging plane prediction from electrocardiogram-gated computed tomography volumes enabled by deep learning, European Heart Journal - Digital Health, Volume 2, Issue 2, June 2021, Pages 311–322, https://doi.org/10.1093/ehjdh/ztab033
 
 ## Description
-We developed a convolutional neural network to provide automatic, accurate and fast chamber segmentation (Left ventricle and Left atrium) + cardiac imaging planes re-slicing (two-chamber, three-chamber, four-chamber planes + a short-axis stack) from cardiac CT images. <br />
+We developed a convolutional neural network to provide automatic, accurate and fast chamber segmentation (Left ventricle and Left atrium) as well as cardiac imaging planes re-slicing (two-chamber, three-chamber, four-chamber planes + a short-axis stack) from cardiac CT images. <br />
 This convolutional neural network is a variant of conventional U-Net. We modified the U-Net architecuture so that (1) it can take the down-sampled 3D CT image directly as the input and (2) it can predict vectors that can be used to re-slice different cardiac imaging planes.
 
 ## User Guideline
