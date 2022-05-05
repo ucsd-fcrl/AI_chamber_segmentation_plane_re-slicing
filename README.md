@@ -8,12 +8,13 @@ Citation: Zhennong Chen, Marzia Rigolli, Davis Marc Vigneault, Seth Kligerman, L
 
 ## Description
 We developed a convolutional neural network to provide automatic, accurate and fast chamber segmentation (Left ventricle and Left atrium) as well as cardiac imaging planes re-slicing (two-chamber, three-chamber, four-chamber planes + a short-axis stack) from cardiac CT images. <br />
-This convolutional neural network is a variant of conventional U-Net. We modified the U-Net architecuture so that (1) it can take the down-sampled 3D CT image directly as the input and (2) it can predict vectors that can be used to re-slice different cardiac imaging planes.
+This convolutional neural network is a variant of conventional U-Net. We modified the U-Net architecuture so that (1) it can take the down-sampled 3D CT image directly as the input and (2) it can predict plane vectors that can be used to re-slice different cardiac imaging planes.
 
 ## User Guideline
 ### Environment Setup
 The entire code is [containerized](https://www.docker.com/resources/what-container). This makes setting up environment swift and easy. Make sure you have nvidia-docker and Docker CE [installed](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker) on your machine before going further. 
-    - You can build your own docker from provided dockerfile ```Dockerfile_cuda100_tensorflow```. ` - - This repo relies on a python package called dvpy. Make sure you have the latest version. If not, in terminal type: pip uninstall dvpy; pip install git+https://github.com/zhennongchen/dvpy.git#egg=dvpy
+    - You can build your own docker from provided dockerfile ```Dockerfile_cuda100_tensorflow```. 
+    - This repo relies on a python package called dvpy. Make sure you have the latest version. If not, in terminal type: pip uninstall dvpy; pip install git+https://github.com/zhennongchen/dvpy.git#egg=dvpy
 
 ### Data preparation
 Here is a list of things you need to prepare:
@@ -26,7 +27,7 @@ Here is a list of things you need to do before training the model.
 1. re-sample all your data to a uniform pixel dimension (dafault = 1.5mm)
     - for CT volumes and segmentations, use ```./tool_resample_by_c3d.sh```
     - for planes, use ```./tool_resample_planes.sh```
-2. extract ground truth plane vectors used to re-slice imaging planes by ```tool_extract_plane_vectors.py```
+2. extract ground truth plane vectors by ```tool_extract_plane_vectors.py```
 3. partition the data if you want to do n-fold cross-validation by ```tool_partition.py``` 
 4. set default parameters for DL experiments by ```. ./set_defaults.sh```
 
