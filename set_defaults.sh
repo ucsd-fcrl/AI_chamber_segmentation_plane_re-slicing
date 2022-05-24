@@ -12,6 +12,8 @@ export CG_CROP_Y=160
 export CG_CROP_Z=96
 
 # Define the number of feature channels in the last down-sampled stage
+# depth=8 means 256 channels in the latent space
+# depth=9 means 512 channels and depth=10 means 1024 channels
 export CG_FEATURE_DEPTH=8
 
 # Define the training epochs 
